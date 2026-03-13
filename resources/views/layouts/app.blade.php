@@ -1,36 +1,36 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Escolar</title>
+    <style>
+        nav { background: #333; padding: 15px; color: white; }
+        nav a { color: white; text-decoration: none; margin-right: 15px; font-weight: bold; }
+        nav a:hover { text-decoration: underline; }
+        .container { padding: 20px; font-family: sans-serif; }
+        .logout-btn { background: #ff4444; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="{{ route('dashboard') }}">Inicio</a> | 
+<a href="{{ route('materias.index') }}">Materias</a> | 
+<a href="{{ route('horarios.index') }}">Horarios</a> | 
+<a href="{{ route('grupos.index') }}">Grupos</a>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    <div style="float: right;">
+        <span style="color: white; margin-right: 10px;">{{ auth()->user()->nombre }}</span>
+        <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+            @csrf
+            <button type="submit" class="logout-btn">Cerrar Sesión</button>
+        </form>
+    </div>
+</nav>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+<div class="container">
+    @yield('content')
+</div>
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
-
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
-
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
-        </div>
-    </body>
+</body>
 </html>

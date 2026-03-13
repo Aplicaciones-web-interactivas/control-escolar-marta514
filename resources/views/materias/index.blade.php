@@ -1,4 +1,8 @@
-<h2>Gestión de Materias</h2>
+@extends('layouts.app')
+
+@section('content')
+    <h2>Gestión de Materias</h2>
+    
 
 <form action="{{ route('materias.store') }}" method="POST">
     @csrf
@@ -25,3 +29,4 @@
         @endforeach
     </tbody>
 </table>
+@endsection
