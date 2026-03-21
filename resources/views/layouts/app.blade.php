@@ -17,7 +17,10 @@
     <a href="{{ route('dashboard') }}">Inicio</a> | 
 <a href="{{ route('materias.index') }}">Materias</a> | 
 <a href="{{ route('horarios.index') }}">Horarios</a> | 
-<a href="{{ route('grupos.index') }}">Grupos</a>
+<a href="{{ route('grupos.index') }}">Grupos</a>|
+<a href="{{ route('calificaciones.index') }}">Calificaciones</a>|
+<a href="{{ route('calificaciones.alumno') }}">Mis Calificaciones</a> |
+<a href="{{ route('inscripciones.index') }}">Inscripciones</a>
 
     <div style="float: right;">
         <span style="color: white; margin-right: 10px;">{{ auth()->user()->nombre }}</span>

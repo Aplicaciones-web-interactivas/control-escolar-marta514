@@ -45,3 +45,20 @@ Route::middleware('auth')->group(function () {
     Route::get('/horarios', [HorarioController::class, 'index'])->name('horarios.index');
     Route::post('/horarios', [HorarioController::class, 'store'])->name('horarios.store');
 });
+use App\Http\Controllers\CalificacionController;
+
+// Ruta para el alumno
+Route::get('/calificaciones/alumno', [CalificacionController::class, 'misCalificaciones'])->name('calificaciones.alumno');
+
+// Ruta para la gestión (admin)
+Route::get('/calificaciones', [CalificacionController::class, 'gestion'])->name('calificaciones.index');
+
+// Ruta para guardar (la misma para ambos si fuera necesario)
+Route::post('/calificaciones', [CalificacionController::class, 'store'])->name('calificaciones.store');
+
+use App\Http\Controllers\InscripcionController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/inscripciones', [InscripcionController::class, 'index'])->name('inscripciones.index');
+    Route::post('/inscripciones', [InscripcionController::class, 'store'])->name('inscripciones.store');
+});
