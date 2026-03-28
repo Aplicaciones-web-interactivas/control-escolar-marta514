@@ -4,36 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema Escolar</title>
-    <style>
-        nav { background: #333; padding: 15px; color: white; }
-        nav a { color: white; text-decoration: none; margin-right: 15px; font-weight: bold; }
-        nav a:hover { text-decoration: underline; }
-        .container { padding: 20px; font-family: sans-serif; }
-        .logout-btn { background: #ff4444; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'azul-marino': '#2f3a55',
+                        'azul-claro': '#5c6b8a',
+                        'gris-escolar': '#6e6f73',
+                        'cafe-acento': '#9f9b75',
+                        'blanco-fondo': '#f5f6f3',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
-<nav>
-    <a href="{{ route('dashboard') }}">Inicio</a> | 
-<a href="{{ route('materias.index') }}">Materias</a> | 
-<a href="{{ route('horarios.index') }}">Horarios</a> | 
-<a href="{{ route('grupos.index') }}">Grupos</a>|
-<a href="{{ route('calificaciones.index') }}">Calificaciones</a>|
-<a href="{{ route('calificaciones.alumno') }}">Mis Calificaciones</a> |
-<a href="{{ route('inscripciones.index') }}">Inscripciones</a>
+<body class="bg-blanco-fondo text-gris-escolar font-sans">
 
-    <div style="float: right;">
-        <span style="color: white; margin-right: 10px;">{{ auth()->user()->nombre }}</span>
-        <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+    <nav class="bg-azul-marino p-4 shadow-md text-white">
+    <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-6">
+            <span class="text-cafe-acento font-black text-xl tracking-tighter">EDU-SYS</span>
+            
+            <div class="flex flex-wrap gap-4 text-sm font-medium">
+                <a href="{{ route('dashboard') }}" class="hover:text-cafe-acento transition">Inicio</a>
+                
+                @if(auth()->user()->rol === 'admin')
+                    <a href="{{ route('materias.index') }}" class="hover:text-cafe-acento">Materias</a>
+                    <a href="{{ route('horarios.index') }}" class="hover:text-cafe-acento">Horarios</a>
+                    <a href="{{ route('grupos.index') }}" class="hover:text-cafe-acento">Grupos</a>
+                    <a href="{{ route('inscripciones.index') }}" class="hover:text-cafe-acento">Inscripciones</a>
+                    <a href="{{ route('calificaciones.admin') }}" class="hover:text-cafe-acento">Calificaciones</a>
+                @else
+                    {{-- Corregimos el nombre de la ruta aquí abajo --}}
+                    <a href="{{ route('horarios.horarios') }}" class="hover:text-cafe-acento">Mi Horario</a>
+                    <a href="{{ route('calificaciones.alumno') }}" class="hover:text-cafe-acento">Mis Notas</a>
+                @endif
+            </div>
+        </div>
+        
+        <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button type="submit" class="logout-btn">Cerrar Sesión</button>
+            <button class="bg-azul-claro hover:bg-red-500 px-3 py-1 rounded text-xs transition">Salir</button>
         </form>
     </div>
 </nav>
 
-<div class="container">
-    @yield('content')
-</div>
+    <main class="container mx-auto py-10 px-4">
+        @yield('content')
+    </main>
 
 </body>
 </html>

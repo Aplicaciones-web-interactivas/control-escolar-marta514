@@ -28,7 +28,7 @@ class AuthController extends Controller
             'nombre' => $request->nombre,
             'clave_institucional' => $request->clave_institucional,
             'password' => Hash::make($request->password),
-            'rol' => 'usuario',
+            'rol' => 'alumno',
         ]);
 
         return redirect()->route('login')->with('success', 'Usuario registrado con éxito.');

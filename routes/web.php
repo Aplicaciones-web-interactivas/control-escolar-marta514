@@ -2,63 +2,65 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MateriaController;
+use App\Http\Controllers\HorarioController;
+use App\Http\Controllers\GrupoController;
+use App\Http\Controllers\InscripcionController;
+use App\Http\Controllers\CalificacionController;
 
-// Ruta raíz
+// --- RUTAS PÚBLICAS (Invitados) ---
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Rutas de Autenticación (Asegúrate de que apunten a TU controlador)
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-
-use App\Http\Controllers\GrupoController;
-
-Route::get('/grupos', [GrupoController::class, 'index'])->name('grupos.index');
-Route::post('/grupos', [GrupoController::class, 'store'])->name('grupos.store');
-
-// Dashboard (Protegido)
-Route::get('/dashboard', function () {
-    return view('dashboard'); // <--- CAMBIA EL TEXTO POR ESTO
-})->middleware(['auth'])->name('dashboard');
-
-use App\Http\Controllers\MateriaController;
-
-Route::middleware('auth')->group(function () {
-    Route::get('/materias', [MateriaController::class, 'index'])->name('materias.index');
-    Route::post('/materias', [MateriaController::class, 'store'])->name('materias.store');
+Route::middleware('guest')->group(function () {
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
-Route::post('/logout', function() {
-    auth()->logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-    return redirect('/login');
-})->name('logout');
+// --- RUTAS PROTEGIDAS (Solo Usuarios Logueados) ---
+Route::middleware(['auth'])->group(function () {
 
-use App\Http\Controllers\HorarioController;
+    // Dashboard
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/horarios', [HorarioController::class, 'index'])->name('horarios.index');
-    Route::post('/horarios', [HorarioController::class, 'store'])->name('horarios.store');
-});
-use App\Http\Controllers\CalificacionController;
+    // Cerrar Sesión
+    Route::post('/logout', function() {
+        auth()->logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/login');
+    })->name('logout');
 
-// Ruta para el alumno
-Route::get('/calificaciones/alumno', [CalificacionController::class, 'misCalificaciones'])->name('calificaciones.alumno');
+    // Ruta para Alumnos (Ver sus propias notas)
+    Route::get('/mis-notas', [CalificacionController::class, 'misCalificaciones'])->name('calificaciones.alumno');
+    Route::get('/mis-horarios', [InscripcionController::class, 'misHorarios'])->name('horarios.horarios');
+    // --- RUTAS DE ADMINISTRADOR (Profesores) ---
+    Route::middleware(['admin'])->group(function () {
+        
+        // Materias
+        Route::get('/materias', [MateriaController::class, 'index'])->name('materias.index');
+        Route::post('/materias', [MateriaController::class, 'store'])->name('materias.store');
 
-// Ruta para la gestión (admin)
-Route::get('/calificaciones', [CalificacionController::class, 'gestion'])->name('calificaciones.index');
+        // Horarios
+        Route::get('/horarios', [HorarioController::class, 'index'])->name('horarios.index');
+        Route::post('/horarios', [HorarioController::class, 'store'])->name('horarios.store');
 
-// Ruta para guardar (la misma para ambos si fuera necesario)
-Route::post('/calificaciones', [CalificacionController::class, 'store'])->name('calificaciones.store');
+        // Grupos
+        Route::get('/grupos', [GrupoController::class, 'index'])->name('grupos.index');
+        Route::post('/grupos', [GrupoController::class, 'store'])->name('grupos.store');
 
-use App\Http\Controllers\InscripcionController;
+        // Inscripciones
+        Route::get('/inscripciones', [InscripcionController::class, 'index'])->name('inscripciones.index');
+        Route::post('/inscripciones', [InscripcionController::class, 'store'])->name('inscripciones.store');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/inscripciones', [InscripcionController::class, 'index'])->name('inscripciones.index');
-    Route::post('/inscripciones', [InscripcionController::class, 'store'])->name('inscripciones.store');
+        // Gestión de Calificaciones
+        Route::get('/admin/calificaciones', [CalificacionController::class, 'gestion'])->name('calificaciones.admin');
+        Route::post('/calificaciones', [CalificacionController::class, 'store'])->name('calificaciones.store');
+    });
+
 });

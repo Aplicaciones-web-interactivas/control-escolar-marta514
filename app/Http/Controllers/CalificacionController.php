@@ -19,10 +19,13 @@ class CalificacionController extends Controller
     }
 
     // VISTA ADMIN/GESTIÓN: Ve todas y tiene el formulario
-    public function gestion() {
-    $calificaciones = Calificacion::with(['usuario', 'grupo.horario.materia'])->get();
-    
-    // Traemos a los usuarios con sus inscripciones y los grupos de esas inscripciones
+    public function gestion()
+{
+    // Cambiamos get() por paginate(15) -> 15 registros por página
+    $calificaciones = Calificacion::with(['usuario', 'grupo.horario.materia'])
+                                    ->latest() // Las más recientes primero
+                                    ->paginate(15);
+
     $usuarios = User::with('inscripciones.grupo.horario.materia')->get();
     
     return view('calificaciones.index', compact('calificaciones', 'usuarios'));

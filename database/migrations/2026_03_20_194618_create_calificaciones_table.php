@@ -19,7 +19,7 @@ return new class extends Migration
         $table->foreignId('user_id')->constrained()->onDelete('cascade');
         
         // Campos de tiempo
-        $table->float('calificacion');
+        $table->decimal('calificacion', 3, 1);
         $table->timestamps();
     });
 }

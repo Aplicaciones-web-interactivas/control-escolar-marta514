@@ -7,17 +7,18 @@ use Illuminate\Http\Request;
 
 class MateriaController extends Controller
 {
-    // Mostrar la lista y el formulario
-    public function index() {
-        $materias = Materia::all();
+    public function index()
+    {
+        // Paginamos de 10 en 10 y mostramos las últimas creadas primero
+        $materias = Materia::latest()->paginate(10);
         return view('materias.index', compact('materias'));
     }
 
-    // Guardar la materia
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $request->validate([
-            'clave_materia' => 'required|unique:materias|max:10',
             'nombre' => 'required|string|max:100',
+            'clave_materia' => 'required|string|max:20|unique:materias,clave_materia',
         ]);
 
         Materia::create($request->all());
