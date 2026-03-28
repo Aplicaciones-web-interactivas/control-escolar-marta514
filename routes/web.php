@@ -7,6 +7,7 @@ use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\InscripcionController;
 use App\Http\Controllers\CalificacionController;
+use App\Http\Controllers\TareaController;
 
 // --- RUTAS PÚBLICAS (Invitados) ---
 Route::get('/', function () {
@@ -62,5 +63,19 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/calificaciones', [CalificacionController::class, 'gestion'])->name('calificaciones.admin');
         Route::post('/calificaciones', [CalificacionController::class, 'store'])->name('calificaciones.store');
     });
+// --- RUTAS DE TAREAS ---
+    Route::middleware(['auth'])->group(function () {
+        // 1. Ver el listado de tareas (GET)
+        Route::get('/tareas', [TareaController::class, 'index'])->name('tareas.index');
+        
+        // 2. Guardar una nueva tarea (POST) - Maestro
+        Route::post('/tareas', [TareaController::class, 'store'])->name('tareas.store');
+        
+        // 3. Subir el PDF (POST) - Alumno
+        Route::post('/tareas/{tarea}/entregar', [TareaController::class, 'subirEntrega'])->name('tareas.entregar');
+        
+        // 4. Ver las entregas de los alumnos (GET) - Maestro
+        Route::get('/tareas/{tarea}/entregas', [TareaController::class, 'verEntregas'])->name('tareas.ver_entregas');
+    });
 
-});
+}); // <-- Cierre final del grupo 'auth'

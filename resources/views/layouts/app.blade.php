@@ -42,6 +42,7 @@
                     <a href="{{ route('horarios.horarios') }}" class="hover:text-cafe-acento">Mi Horario</a>
                     <a href="{{ route('calificaciones.alumno') }}" class="hover:text-cafe-acento">Mis Notas</a>
                 @endif
+                <a href="{{ route('tareas.index') }}" class="hover:text-cafe-acento">Tareas</a>
             </div>
         </div>
         
